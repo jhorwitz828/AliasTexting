@@ -1,0 +1,20 @@
+{
+  "name": "aliasTexing",
+  "main": "index.js",
+  "version": "0.0.0",
+  "authors": [
+    "Joshua Horwitz <jhorwitz@bandwidth.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}

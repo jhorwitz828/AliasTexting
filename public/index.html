@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TextMe App</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="components/jquery/dist/jquery.min.js"></script>
+		<script>
+		$("document").ready(function (){
+			$("#submit").click(function (){
+				console.log("Clicked")
+				var payload = {
+					text : $("#text").val(),
+          city : $("#city").val().toUpperCase(),
+          state : $("#state").val().toUpperCase(),
+					oneLiner : $("#oneLiner").val()
+				};
+				$.ajax({
+					method: "POST",
+					url: "/numbers",
+					contentType: "application/json",
+					data: JSON.stringify(payload),
+					success: function( data ) {
+						console.log("success");
+					}
+				});
+			});
+		});
+		</script>
+  </head>
+  <body>
+Your phone number (ex. +15555555555):<br>
+<input type="text" name="text" id="text" value="+15555555555">
+<br>
+City where your alias number is located:<br>
+<input type="text" name="city" id="city" size="20" value="CITY">
+<br>
+State where your alias number is located:<br>
+<input type="text" name="state" id="state" size="2" value="XX">
+<br>
+Choose a one-liner to send as your first text:<br>
+<input type="text" name="oneLiner" id="oneLiner" size= "160" value="Hey, it was nice meeting you tonight">
+<br><br>
+<button id="submit">Submit</button>
+  </body>
+</html>
