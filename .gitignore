@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
 ngrok
-package.json
 coverage
 scratch.js
 public/components

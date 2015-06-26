@@ -1,0 +1,27 @@
+{
+  "name": "aliastexting",
+  "description": "An awesome Incubation project.",
+  "private": "true",
+  "repository": {
+    "type": "git",
+    "url": "http://something.git"
+  },
+  "scripts": {
+    "test": "grunt",
+    "postinstall": "./node_modules/bower/bin/bower install"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.1",
+    "bower": "^1.4.1",
+    "dict": "^1.4.0",
+    "express": "^4.12.4",
+    "node-bandwidth": "^1.0.9",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {
+    "nock": "^2.6.0",
+    "request": "^2.58.0",
+    "should": "^7.0.1",
+    "supertest": "^1.0.1"
+  }
+}
