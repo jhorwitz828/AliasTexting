@@ -3,7 +3,5 @@ node_modules
 ngrok
 package.json
 coverage
-lib
 scratch.js
-test/aliasTexting-test.js
 public/components
