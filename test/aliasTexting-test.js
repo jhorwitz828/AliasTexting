@@ -11,38 +11,8 @@ var app = express();
 
 describe("TextApp", function () {
 	var router;
-	before(function (done) {
-		nock("https://api.catapult.inetwork.com:443")
-			.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&numberState=ENABLED")
-			.reply(200, [ { "application" :"https://api.catapult.inetwork.com/v1/users/" +
-			"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
-				"id" :"n-kins5yioy3ih4e7le4uuexa","number" :"+15123879534",
-				"nationalNumber" :"(512) 387-9534",
-				"name" :"[\"+18283290994\",null,\"Hey, it was nice meeting you tonight\"]",
-				"createdTime" :"2015-06-24T14:01:07Z","city" :"AUSTIN",
-				"state" :"TX","price" :"0.25","numberState" :"enabled" },
-				{ "application" :"https://api.catapult.inetwork.com/v1/users/" +
-				"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
-				"id" :"n-kins5yioy3ih4e7le4uuexa","number" :"+19196513853",
-				"nationalNumber" :"(919) 651-3853",
-				"createdTime" :"2015-06-24T14:01:07Z","city" :"CARY",
-				"state" :"NC","price" :"0.25","numberState" :"enabled" },
-				{ "application" :"https://api.catapult.inetwork.com/v1/users/" +
-				"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
-				"id" :"n-omcrk3jsuwwj4loovnzspyi","number" :"+15123877530",
-				"nationalNumber" :"(512) 387-7530",
-				"name" :"[\"+18283290994\",null,\"Hey, it was nice meeting you tonight\"]",
-				"createdTime" :"2015-06-24T13:58:42Z","city" :"AUSTIN",
-				"state" :"TX","price" :"0.25","numberState" :"enabled" } ],
-				{ "cache-control"   : "no-cache",
-				"content-type"      : "application/json",
-				date                : "Wed, 24 Jun 2015 18:41:27 GMT",
-				link                : "<https://api.catapult.inetwork.com/v1/users/" +
-				"u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&page=0&size=25>; rel='first'",
-				server              : "Jetty(8.1.10.v20130312)",
-				"transfer-encoding" : "chunked",
-				connection          : "Close" });
-		router = new Router(done);
+	before(function () {
+		router = new Router();
 		app.use("/", router.router);
 	});
 	it("should serve the HTML page", function (done) {
@@ -54,6 +24,74 @@ describe("TextApp", function () {
 	});
 	after(function () {
 		nock.cleanAll();
+	});
+	describe("should test the initialize function", function () {
+		before(function () {
+			nock("https://api.catapult.inetwork.com:443")
+				.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&numberState=ENABLED")
+				.reply(200, [ { "application" :"https://api.catapult.inetwork.com/v1/users/" +
+				"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
+					"id" :"n-kins5yioy3ih4e7le4uuexa","number" :"+15123879534",
+					"nationalNumber" :"(512) 387-9534",
+					"name" :"[\"+18283290994\",null,\"Hey, it was nice meeting you tonight\"]",
+					"createdTime" :"2015-06-24T14:01:07Z","city" :"AUSTIN",
+					"state" :"TX","price" :"0.25","numberState" :"enabled" },
+					{ "application" :"https://api.catapult.inetwork.com/v1/users/" +
+					"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
+					"id" :"n-kins5yioy3ih4e7le4uuexa","number" :"+19196513853",
+					"nationalNumber" :"(919) 651-3853",
+					"createdTime" :"2015-06-24T14:01:07Z","city" :"CARY",
+					"state" :"NC","price" :"0.25","numberState" :"enabled" },
+					{ "application" :"https://api.catapult.inetwork.com/v1/users/" +
+					"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
+					"id" :"n-omcrk3jsuwwj4loovnzspyi","number" :"+15123877530",
+					"nationalNumber" :"(512) 387-7530",
+					"name" :"[\"+18283290994\",null,\"Hey, it was nice meeting you tonight\"]",
+					"createdTime" :"2015-06-24T13:58:42Z","city" :"AUSTIN",
+					"state" :"TX","price" :"0.25","numberState" :"enabled" } ],
+					{ "cache-control"   : "no-cache",
+					"content-type"      : "application/json",
+					date                : "Wed, 24 Jun 2015 18:41:27 GMT",
+					link                : "<https://api.catapult.inetwork.com/v1/users/" +
+					"u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&page=0&size=25>; rel='first'",
+					server              : "Jetty(8.1.10.v20130312)",
+					"transfer-encoding" : "chunked",
+					connection          : "Close" });
+		});
+		it("should resolve successfully", function (done) {
+			router.initialize().then(function () {
+				done();
+			});
+		});
+		after(function () {
+			nock.cleanAll();
+		});
+	});
+	describe("should handle erros on the initialize function", function () {
+		before(function () {
+			nock("https://api.catapult.inetwork.com:443")
+				.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&numberState=ENABLED")
+				.reply(500,
+					{ "cache-control"   : "no-cache",
+					"content-type"      : "application/json",
+					date                : "Wed, 24 Jun 2015 18:41:27 GMT",
+					link                : "<https://api.catapult.inetwork.com/v1/users/" +
+					"u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&page=0&size=25>; rel='first'",
+					server              : "Jetty(8.1.10.v20130312)",
+					"transfer-encoding" : "chunked",
+					connection          : "Close" });
+		});
+		it("should reject with an error", function (done) {
+			router.initialize()
+			.then(function () {})
+			.catch(function (err) {
+				err.httpStatus.should.equal(500);
+				done();
+			});
+		});
+		after(function () {
+			nock.cleanAll();
+		});
 	});
 	describe("should search for numbers", function () {
 		var nums;
@@ -772,8 +810,8 @@ describe("TextApp", function () {
 	});
 });
 
-describe("should ensure the program doesn't crash if no callback to router constructer is given", function () {
-	it("should not crash", function () {
+describe("TextApp", function () {
+	it("should ensure the program doesn't crash if no callback to router constructer is given", function () {
 		var router = new Router();
 		router.should.be.ok;
 	});
