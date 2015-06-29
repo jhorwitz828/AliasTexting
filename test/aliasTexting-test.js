@@ -342,6 +342,17 @@ describe("TextApp", function () {
 				"content-length"  : "1281",
 				connection        : "Close" });
 
+			nock("https://api.catapult.inetwork.com:443")
+				.get("/v1/availableNumbers/local?state=NC&city=Cary")
+				.reply(200, [ { "number" :"+19192300062","nationalNumber" :"(919) 230-0062","city" :"CARY","rateCenter" :"CARY",
+				"state" :"NC","price" :"0.25" } ],
+				{ "cache-control" : "no-cache",
+				"content-type"    : "application/json",
+				date              : "Mon, 22 Jun 2015 17:38:50 GMT",
+				server            : "Jetty(8.1.10.v20130312)",
+				"content-length"  : "1281",
+				connection        : "Close" });
+
 			var numPayload = { "application" :"https://api.catapult.inetwork.com/v1/" +
 			"users/u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
 			"id" :"n-o2kocmxfxjvnakyjcg6yssy",
@@ -373,10 +384,44 @@ describe("TextApp", function () {
 				connection          : "Close",
 				location            : "/abc" });
 
+			nock("https://api.catapult.inetwork.com:443")
+				.filteringRequestBody(function (body) {
+					return "abc";
+				})
+				.post("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers", "abc")
+				.reply(201, numPayload,
+				{ "cache-control"   : "no-cache",
+				"content-type"      : "application/json",
+				date                : "Tue, 23 Jun 2015 13:09:43 GMT",
+				server              : "Jetty(8.1.10.v20130312)",
+				"transfer-encoding" : "chunked",
+				connection          : "Close",
+				location            : "/abc"
+				})
+				.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/abc")
+				.reply(200, numPayload,
+				{ "cache-control"   : "no-cache",
+				"content-type"      : "application/json",
+				date                : "Tue, 23 Jun 2015 13:09:43 GMT",
+				server              : "Jetty(8.1.10.v20130312)",
+				"transfer-encoding" : "chunked",
+				connection          : "Close",
+				location            : "/abc" });
+
 			var updatePayload = { "name" :"[\"+18283290994\",null," +
 			"\"Hey, how are you?\"]","applicationId" :"a-hvszhcwftsdr6khcn4zl6my" };
 			nock("https://api.catapult.inetwork.com:443")
 				.post("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/n-o2kocmxfxjvnakyjcg6yssy", updatePayload)
+				.reply(200, "", { "cache-control" : "no-cache",
+				date                              : "Thu, 25 Jun 2015 14:28:14 GMT",
+				server                            : "Jetty(8.1.10.v20130312)",
+				"content-length"                  : "0",
+				connection                        : "Close" });
+
+			var updatePayload2 = { "name" :"[\"+18283290994\",null," +
+			"\"Hey\"]","applicationId" :"a-hvszhcwftsdr6khcn4zl6my" };
+			nock("https://api.catapult.inetwork.com:443")
+				.post("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/n-o2kocmxfxjvnakyjcg6yssy", updatePayload2)
 				.reply(200, "", { "cache-control" : "no-cache",
 				date                              : "Thu, 25 Jun 2015 14:28:14 GMT",
 				server                            : "Jetty(8.1.10.v20130312)",
@@ -423,6 +468,22 @@ describe("TextApp", function () {
 					"transfer-encoding" : "chunked",
 					connection          : "Close",
 					location            : "/abc" });
+
+			nock("https://api.catapult.inetwork.com:443")
+				.filteringRequestBody(function (body) {
+					return "abc";
+				})
+					.post("/v1/users/u-37oyq5ser536gujhptoks6y/messages", "abc")
+					.reply(201, message_reply, headers)
+					.get("/v1/users/u-37oyq5ser536gujhptoks6y/messages/abc")
+					.reply(200, message_payload,
+					{ "cache-control"   : "no-cache",
+					"content-type"      : "application/json",
+					date                : "Tue, 23 Jun 2015 13:09:43 GMT",
+					server              : "Jetty(8.1.10.v20130312)",
+					"transfer-encoding" : "chunked",
+					connection          : "Close",
+					location            : "/abc" });
 		});
 		it("should retrieve and order a number from catapult, then send a text from that number", function (done) {
 			var postPayload = {
@@ -430,6 +491,16 @@ describe("TextApp", function () {
 				"city"     :"Cary",
 				"state"    :"NC",
 				"oneLiner" :"Hey, how are you?"
+			};
+			supertest(app)
+				.post("/numbers")
+				.send(postPayload)
+				.expect(200)
+				.end(done);
+		});
+		it("should use Cary, NC if the user doesn't specify a city, state, or oneLiner", function (done) {
+			var postPayload = {
+				"text" : "+18283290994"
 			};
 			supertest(app)
 				.post("/numbers")
@@ -476,6 +547,16 @@ describe("TextApp", function () {
 			"\"+10000000000\",\"Hey, how are you?\"]","applicationId" :"a-hvszhcwftsdr6khcn4zl6my" };
 			nock("https://api.catapult.inetwork.com:443")
 				.post("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/n-o2kocmxfxjvnakyjcg6yssy", updatePayload)
+				.reply(200, "", { "cache-control" : "no-cache",
+				date                              : "Thu, 25 Jun 2015 14:28:14 GMT",
+				server                            : "Jetty(8.1.10.v20130312)",
+				"content-length"                  : "0",
+				connection                        : "Close" });
+
+			var updatePayload2 = { "name" :"[\"+18283290994\"," +
+			"\"+10000000000\",\"Hey\"]","applicationId" :"a-hvszhcwftsdr6khcn4zl6my" };
+			nock("https://api.catapult.inetwork.com:443")
+				.post("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/n-o2kocmxfxjvnakyjcg6yssy", updatePayload2)
 				.reply(200, "", { "cache-control" : "no-cache",
 				date                              : "Thu, 25 Jun 2015 14:28:14 GMT",
 				server                            : "Jetty(8.1.10.v20130312)",
@@ -742,70 +823,6 @@ describe("TextApp", function () {
 		});
 		after(function () {
 			nock.cleanAll();
-		});
-	});
-	describe("should handle errors on delete number", function () {
-		before(function () {
-			nock("https://api.catapult.inetwork.com:443")
-				.delete("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers/n-o2kocmxfxjvnakyjcg6yssy")
-				.reply(500, "", { "cache-control" : "no-cache",
-				date                              : "Thu, 25 Jun 2015 14:28:14 GMT",
-				server                            : "Jetty(8.1.10.v20130312)",
-				"content-length"                  : "0",
-				connection                        : "Close" });
-
-			var message_reply = [ { "application" :"https://api.catapult.inetwork.com/v1/" +
-			"users/u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
-				"id" :"n-kins5yioy3ih4e7le4uuexa","number" :"+19192300062","nationalNumber" :"(919) 230-0062",
-				"name" :"[\"+18283290994\",\"+10000000000\",\"Hey, how are you?\"]",
-				"createdTime" :"2015-06-24T14:01:07Z","city" :"CARY","state" :"NC","price" :"0.25",
-				"numberState" :"enabled" },
-				{ "application" :"https://api.catapult.inetwork.com/v1/" +
-				"users/u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
-				"id" :"n-omcrk3jsuwwj4loovnzspyi","number" :"+15123877530","nationalNumber" :"(512) 387-7530",
-				"name" :"[\"+18283290994\",null,\"Hey, it was nice meeting you tonight\"]",
-				"createdTime" :"2015-06-24T13:58:42Z","city" :"AUSTIN","state" :"TX","price" :"0.25",
-				"numberState" :"enabled" } ];
-
-			var headers = { "cache-control" : "no-cache",
-				"content-type"                 : "application/json",
-				date                           : "Wed, 24 Jun 2015 15:02:50 GMT",
-				link                           : "<https://api.catapult.inetwork.com/v1/users/u-37oyq5ser536gujhptoks6y/" +
-				"messages?applicationId=a-hvszhcwftsdr6khcn4zl6my&page=0&size=25>; rel='first'",
-				server                         : "Jetty(8.1.10.v20130312)",
-				"transfer-encoding"            : "chunked",
-				connection                     : "Close",
-				location                       : "/abc" };
-
-			var message_payload = { "from" :"+19192300062","to" :"+18283290994","text" :"TextMe: Failed to delete" };
-
-			nock("https://api.catapult.inetwork.com:443")
-			.filteringRequestBody(function (body) {
-				return "abc";
-			})
-				.post("/v1/users/u-37oyq5ser536gujhptoks6y/messages", "abc")
-				.reply(200, message_reply, headers)
-				.get("/v1/users/u-37oyq5ser536gujhptoks6y/messages/abc")
-				.reply(200, message_payload,
-				{ "cache-control"   : "no-cache",
-				"content-type"      : "application/json",
-				date                : "Tue, 23 Jun 2015 13:09:43 GMT",
-				server              : "Jetty(8.1.10.v20130312)",
-				"transfer-encoding" : "chunked",
-				connection          : "Close",
-				location            : "/abc" });
-		});
-		it("should fail to delete the alias number", function (done) {
-			var postPayload = {
-				"text" :"GET LOST",
-				"to"   :"+19192300062",
-				"from" :"+18283290994"
-			};
-			supertest(app)
-				.post("/messages")
-				.send(postPayload)
-				.expect(200)
-				.end(done);
 		});
 	});
 });

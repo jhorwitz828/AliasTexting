@@ -19,6 +19,8 @@
     "util": "^0.10.3"
   },
   "devDependencies": {
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0",
     "nock": "^2.6.0",
     "request": "^2.58.0",
     "should": "^7.0.1",
