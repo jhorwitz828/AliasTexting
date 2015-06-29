@@ -26,8 +26,9 @@ describe("TextApp", function () {
 		nock.cleanAll();
 	});
 	describe("should test the initialize function", function () {
+		var api;
 		before(function () {
-			nock("https://api.catapult.inetwork.com:443")
+			api = nock("https://api.catapult.inetwork.com:443")
 				.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&numberState=ENABLED")
 				.reply(200, [ { "application" :"https://api.catapult.inetwork.com/v1/users/" +
 				"u-37oyq5ser536gujhptoks6y/applications/a-hvszhcwftsdr6khcn4zl6my",
@@ -60,6 +61,7 @@ describe("TextApp", function () {
 		});
 		it("should resolve successfully", function (done) {
 			router.initialize().then(function () {
+				api.isDone().should.equal(true);
 				done();
 			});
 		});
@@ -67,7 +69,7 @@ describe("TextApp", function () {
 			nock.cleanAll();
 		});
 	});
-	describe("should handle erros on the initialize function", function () {
+	describe("should handle errors on the initialize function", function () {
 		before(function () {
 			nock("https://api.catapult.inetwork.com:443")
 				.get("/v1/users/u-37oyq5ser536gujhptoks6y/phoneNumbers?applicationId=a-hvszhcwftsdr6khcn4zl6my&numberState=ENABLED")
